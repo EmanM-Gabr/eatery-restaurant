@@ -1,3 +1,10 @@
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvzdlayv";
+const STORAGE_KEYS = {
+    invoices: "eatery_invoices_v1",
+    counter: "eatery_invoice_counter_v1",
+    visits: "eatery_visits_v1"
+};
+
 const categoryData = {
     meals: {
         title: "Meals Menu & Prices",
@@ -344,10 +351,70 @@ const categoryData = {
 };
 
 let currentUnitPrice = 185;
+let invoices = [];
+let invoiceCounter = 1000;
+let visitsCount = 1;
 
 function parsePriceValue(priceStr) {
     const num = parseFloat(String(priceStr).replace(/[^\d.]/g, ""));
     return Number.isNaN(num) ? 0 : num;
+}
+
+function getAllMenuOptions() {
+    const list = [];
+    ["meals", "drinks", "desserts"].forEach((catKey) => {
+        const catLabel = categoryData[catKey].label;
+        categoryData[catKey].items.forEach((item, idx) => {
+            list.push({
+                key: `${catKey}:${idx}`,
+                categoryKey: catKey,
+                categoryLabel: catLabel,
+                index: idx,
+                name: item.name,
+                price: item.price,
+                unitPrice: parsePriceValue(item.price),
+                img: item.img,
+                desc: item.desc
+            });
+        });
+    });
+    return list;
+}
+
+function saveState() {
+    localStorage.setItem(STORAGE_KEYS.invoices, JSON.stringify(invoices));
+    localStorage.setItem(STORAGE_KEYS.counter, String(invoiceCounter));
+}
+
+function loadState() {
+    const savedVisits = parseInt(localStorage.getItem(STORAGE_KEYS.visits) || "0", 10);
+    visitsCount = (Number.isNaN(savedVisits) ? 0 : savedVisits) + 1;
+    localStorage.setItem(STORAGE_KEYS.visits, String(visitsCount));
+
+    const savedCounter = parseInt(localStorage.getItem(STORAGE_KEYS.counter) || "1000", 10);
+    invoiceCounter = Number.isNaN(savedCounter) ? 1000 : savedCounter;
+
+    try {
+        const raw = localStorage.getItem(STORAGE_KEYS.invoices);
+        invoices = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(invoices)) invoices = [];
+    } catch (_) {
+        invoices = [];
+    }
+}
+
+function updateStatsDisplay() {
+    const homeOrders = document.getElementById("home-orders-count");
+    const homeVisits = document.getElementById("home-visits-count");
+    const actVisits = document.getElementById("activity-visits");
+    const actInvoices = document.getElementById("activity-invoices");
+    const badge = document.getElementById("invoices-count-badge");
+
+    if (homeOrders) homeOrders.textContent = String(invoices.length);
+    if (homeVisits) homeVisits.textContent = String(visitsCount);
+    if (actVisits) actVisits.textContent = String(visitsCount);
+    if (actInvoices) actInvoices.textContent = String(invoices.length);
+    if (badge) badge.textContent = `${invoices.length} ${invoices.length === 1 ? "Invoice" : "Invoices"}`;
 }
 
 function updateTotalPrice() {
@@ -466,32 +533,224 @@ function syncMenuFromTableSelect() {
     filterCategory();
 }
 
-function handleLocalSubmit(event) {
+async function sendInvoiceToFormspree(invoice) {
+    const payload = new URLSearchParams();
+    payload.append("invoice_number", invoice.id);
+    payload.append("customer_name", invoice.customerName);
+    payload.append("customer_phone", invoice.customerPhone);
+    payload.append("customer_email", invoice.customerEmail);
+    payload.append("item", invoice.itemName);
+    payload.append("category", invoice.categoryLabel);
+    payload.append("unit_price", `${invoice.unitPrice} EGP`);
+    payload.append("quantity", String(invoice.quantity));
+    payload.append("total_price", `${invoice.unitPrice * invoice.quantity} EGP`);
+    payload.append("payment_method", invoice.paymentMethod);
+    payload.append("notes", invoice.notes || "None");
+
+    const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: payload.toString()
+    });
+
+    if (!response.ok) {
+        throw new Error("Formspree request failed");
+    }
+}
+
+function renderInvoices() {
+    const container = document.getElementById("invoices-container");
+    if (!container) return;
+
+    updateStatsDisplay();
+
+    if (!invoices.length) {
+        container.innerHTML = `<div class="empty-invoices">No invoices yet. Place an order above to generate your first invoice.</div>`;
+        return;
+    }
+
+    const allOptions = getAllMenuOptions();
+
+    container.innerHTML = invoices
+        .map((inv) => {
+            const total = inv.unitPrice * inv.quantity;
+            const optionsHtml = allOptions
+                .map(
+                    (opt) =>
+                        `<option value="${opt.key}" ${opt.name === inv.itemName ? "selected" : ""}>${opt.categoryLabel}: ${opt.name} (${opt.price})</option>`
+                )
+                .join("");
+
+            return `
+                <article class="invoice-card" id="invoice-${inv.id}">
+                    <div class="invoice-top">
+                        <span class="invoice-id">Invoice #${inv.id}</span>
+                        <span class="invoice-meta">${inv.createdAt} • ${inv.paymentMethod}</span>
+                    </div>
+
+                    <div class="invoice-body-grid">
+                        <select class="invoice-item-select" aria-label="Change item for ${inv.id}" onchange="changeInvoiceItem('${inv.id}', this.value)">
+                            ${optionsHtml}
+                        </select>
+
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="changeInvoiceQty('${inv.id}', -1)" aria-label="Decrease quantity">-</button>
+                            <span class="qty-val">${inv.quantity}</span>
+                            <button type="button" class="qty-btn" onclick="changeInvoiceQty('${inv.id}', 1)" aria-label="Increase quantity">+</button>
+                        </div>
+
+                        <div class="invoice-total">${total} EGP</div>
+                    </div>
+
+                    <div class="invoice-customer">
+                        <strong>Customer:</strong> ${inv.customerName} | <strong>Phone:</strong> ${inv.customerPhone} | <strong>Email:</strong> ${inv.customerEmail}
+                        ${inv.notes ? `<br><strong>Notes:</strong> ${inv.notes}` : ""}
+                    </div>
+
+                    <div class="invoice-actions">
+                        <button type="button" class="inv-btn inv-send-btn" onclick="resendInvoice('${inv.id}')">Send / Update Email</button>
+                        <button type="button" class="inv-btn inv-cancel-btn" onclick="cancelInvoice('${inv.id}')">Cancel Order</button>
+                    </div>
+                </article>
+            `;
+        })
+        .join("");
+}
+
+function changeInvoiceQty(invoiceId, delta) {
+    const inv = invoices.find((item) => item.id === invoiceId);
+    if (!inv) return;
+
+    const nextQty = inv.quantity + delta;
+    if (nextQty <= 0) {
+        cancelInvoice(invoiceId);
+        return;
+    }
+
+    inv.quantity = nextQty;
+    saveState();
+    renderInvoices();
+}
+
+function changeInvoiceItem(invoiceId, selectedOptionKey) {
+    const inv = invoices.find((item) => item.id === invoiceId);
+    if (!inv) return;
+
+    const [catKey, idxStr] = selectedOptionKey.split(":");
+    const idx = parseInt(idxStr, 10);
+    const chosen = categoryData[catKey] && categoryData[catKey].items[idx];
+    if (!chosen) return;
+
+    inv.itemName = chosen.name;
+    inv.categoryLabel = categoryData[catKey].label;
+    inv.unitPrice = parsePriceValue(chosen.price);
+
+    saveState();
+    renderInvoices();
+}
+
+function cancelInvoice(invoiceId) {
+    invoices = invoices.filter((item) => item.id !== invoiceId);
+    saveState();
+    renderInvoices();
+}
+
+async function resendInvoice(invoiceId) {
+    const inv = invoices.find((item) => item.id === invoiceId);
+    const feedbackEl = document.getElementById("demo-feedback");
+    if (!inv || !feedbackEl) return;
+
+    feedbackEl.textContent = `Sending updated invoice #${inv.id} to email...`;
+    try {
+        await sendInvoiceToFormspree(inv);
+        feedbackEl.textContent = `Invoice #${inv.id} (${inv.quantity}x ${inv.itemName} — ${inv.unitPrice * inv.quantity} EGP) sent to email!`;
+    } catch (_) {
+        feedbackEl.textContent = `Invoice #${inv.id} updated locally (check internet or Formspree endpoint if sending failed).`;
+    }
+}
+
+function resetOrderFormFields() {
+    const form = document.getElementById("booking-form");
+    if (form) form.reset();
+
+    document.getElementById("item-qty").value = 1;
+    document.getElementById("payment-method").value = "Cash on Delivery";
+    toggleVisaFields();
+    updateTotalPrice();
+}
+
+async function handleOrderSubmit(event) {
     event.preventDefault();
-    const nameVal = document.getElementById("customer-name").value.trim();
-    const phoneVal = document.getElementById("customer-phone").value.trim();
-    const qtyVal = parseInt(document.getElementById("item-qty").value, 10) || 1;
-    const itemVal = document.getElementById("selected-item-input").value;
-    const paymentVal = document.getElementById("payment-method").value;
-    const totalVal = `${currentUnitPrice * qtyVal} EGP`;
+
+    const submitBtn = document.getElementById("submit-order-btn");
     const feedbackEl = document.getElementById("demo-feedback");
     const trackerEl = document.getElementById("delivery-tracker");
     const summaryTextEl = document.getElementById("delivery-summary-text");
 
-    if (feedbackEl) {
-        feedbackEl.textContent = `Order confirmed for ${nameVal || "Guest"} (${phoneVal || "No phone"}) — Total: ${totalVal} (${paymentVal}).`;
+    const nameVal = document.getElementById("customer-name").value.trim();
+    const phoneVal = document.getElementById("customer-phone").value.trim();
+    const emailVal = document.getElementById("customer-email").value.trim();
+    const notesVal = document.getElementById("customer-message").value.trim();
+    const qtyVal = Math.max(1, parseInt(document.getElementById("item-qty").value, 10) || 1);
+    const paymentVal = document.getElementById("payment-method").value;
+    const itemNameVal = document.getElementById("preview-name").textContent.trim();
+    const categoryLabelVal = document.getElementById("preview-category").textContent.trim();
+
+    invoiceCounter += 1;
+    const newInvoice = {
+        id: `INV-${invoiceCounter}`,
+        customerName: nameVal || "Guest",
+        customerPhone: phoneVal || "N/A",
+        customerEmail: emailVal || "N/A",
+        itemName: itemNameVal,
+        categoryLabel: categoryLabelVal,
+        unitPrice: currentUnitPrice,
+        quantity: qtyVal,
+        paymentMethod: paymentVal,
+        notes: notesVal,
+        createdAt: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    };
+
+    invoices.unshift(newInvoice);
+    saveState();
+    renderInvoices();
+
+    const totalEgp = `${newInvoice.unitPrice * newInvoice.quantity} EGP`;
+    if (summaryTextEl) {
+        summaryTextEl.textContent = `#${newInvoice.id} • ${qtyVal}x ${itemNameVal} • ${totalEgp} • ${paymentVal}`;
+    }
+    if (trackerEl) {
+        trackerEl.style.display = "block";
     }
 
-    if (trackerEl && summaryTextEl) {
-        summaryTextEl.textContent = `${qtyVal}x ${itemVal} • ${totalVal} • ${paymentVal}`;
-        trackerEl.style.display = "block";
-        trackerEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    if (submitBtn) submitBtn.disabled = true;
+    if (feedbackEl) {
+        feedbackEl.textContent = `Creating invoice #${newInvoice.id} and sending to email...`;
+    }
+
+    try {
+        await sendInvoiceToFormspree(newInvoice);
+        if (feedbackEl) {
+            feedbackEl.textContent = `Invoice #${newInvoice.id} saved & sent to email! Form cleared for new orders.`;
+        }
+    } catch (_) {
+        if (feedbackEl) {
+            feedbackEl.textContent = `Invoice #${newInvoice.id} saved locally. Form cleared for new orders.`;
+        }
+    } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        resetOrderFormFields();
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    loadState();
     renderMenuTable(document.getElementById("category").value);
     updateTotalPrice();
     toggleVisaFields();
+    renderInvoices();
     showPage("home");
 });
