@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eatery Restaurant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logo.png">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#home" class="brand" onclick="showPage('home')">Eatery Restaurant</a>
+            <nav aria-label="Main Navigation">
+                <a href="#home" class="nav-link active" data-view="home" onclick="showPage('home')">Home</a>
+                <a href="#categories-view" class="nav-link" data-view="categories" onclick="showPage('categories')">Categories</a>
+                <a href="#menu-view" class="nav-link" data-view="menu" onclick="showPage('menu')">Daily Menu</a>
+                <a href="#booking-view" class="nav-link" data-view="booking" onclick="showPage('booking')">Order &amp; Booking</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="page-wrapper">
+        <!-- HOME VIEW -->
+        <section id="home-view" class="view-section">
+            <div class="hero-card">
+                <span class="hero-tag">Crafted Kitchen &amp; Table</span>
+                <h2>Where Fresh Flavors Meet Warm Hospitality</h2>
+                <p>
+                    Welcome to Eatery — a modern neighborhood kitchen serving chef-crafted plates,
+                    signature drinks, and freshly baked desserts made to be shared.
+                </p>
+                <div class="hero-actions">
+                    <button type="button" class="btn-primary" onclick="showPage('categories')">Explore Categories</button>
+                    <button type="button" class="btn-secondary" onclick="showPage('menu')">View Menu &amp; Order</button>
+                </div>
+            </div>
+
+            <div class="highlights-grid">
+                <article class="highlight-card">
+                    <h3>Farm-Fresh Ingredients</h3>
+                    <p>Daily produce, house-made sauces, and balanced recipes prepared fresh to order.</p>
+                </article>
+                <article class="highlight-card">
+                    <h3>Signature Pairings</h3>
+                    <p>From vibrant citrus coolers and specialty coffee to warm chocolate finishes.</p>
+                </article>
+                <article class="highlight-card">
+                    <h3>Instant Item Ordering</h3>
+                    <p>Pick any dish, drink, or dessert from our menu to view its details and place your order.</p>
+                </article>
+            </div>
+
+            <div class="stats-strip">
+                <div class="stat-box">
+                    <strong>54</strong>
+                    <span>Curated Menu Items</span>
+                </div>
+                <div class="stat-box">
+                    <strong>3</strong>
+                    <span>Signature Categories</span>
+                </div>
+                <div class="stat-box">
+                    <strong>Daily</strong>
+                    <span>Fresh Prep &amp; Service</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORIES VIEW -->
+        <section id="categories-view" class="view-section" style="display: none;">
+            <div class="card">
+                <label for="category">Choose a category:</label>
+                <select id="category" onchange="filterCategory()">
+                    <option value="meals">Meals</option>
+                    <option value="drinks">Drinks</option>
+                    <option value="desserts">Desserts</option>
+                </select>
+            </div>
+
+            <!-- Meals Section -->
+            <div id="meals-section" class="category-group">
+                <div class="container_meals">
+                    <img src="img/meals/1.jfif" alt="Crunchy Rainbow Carrot & Beet Salad" onclick="orderSpecificItem('meals', 0)">
+                    <img src="img/meals/2.jfif" alt="Cheesy Herb Garlic Bread" onclick="orderSpecificItem('meals', 1)">
+                    <img src="img/meals/3.jfif" alt="Walnut, Cranberry & Goat Cheese Flatbread" onclick="orderSpecificItem('meals', 2)">
+                    <img src="img/meals/4.jfif" alt="Grilled Halloumi & Herb Skewers" onclick="orderSpecificItem('meals', 3)">
+                    <img src="img/meals/5.jfif" alt="Spinach, Sun-Dried Tomato & Cheese Melt" onclick="orderSpecificItem('meals', 4)">
+                    <img src="img/meals/6.jfif" alt="Savoury Puff Pastry Pinwheels" onclick="orderSpecificItem('meals', 5)">
+                    <img src="img/meals/7.jfif" alt="Arugula, Prosciutto & Feta Flatbread" onclick="orderSpecificItem('meals', 6)">
+                    <img src="img/meals/8.jfif" alt="Grilled Chicken & Creamy Mushroom Fettuccine" onclick="orderSpecificItem('meals', 7)">
+                    <img src="img/meals/9.jfif" alt="Herb-Stuffed Roasted Meat Roll" onclick="orderSpecificItem('meals', 8)">
+                    <img src="img/meals/10.jfif" alt="Loaded Cheddar & Jalapeño Fries" onclick="orderSpecificItem('meals', 9)">
+                    <img src="img/meals/11.jfif" alt="Herb-Glazed Lamb Chops with Mashed Potatoes" onclick="orderSpecificItem('meals', 10)">
+                    <img src="img/meals/12.jfif" alt="Gourmet Taco Platter with Salsa & Guacamole" onclick="orderSpecificItem('meals', 11)">
+                    <img src="img/meals/13.jfif" alt="Crispy Blue Cheese & Herb Crusted Cutlet" onclick="orderSpecificItem('meals', 12)">
+                    <img src="img/meals/14.jfif" alt="Savory Pizza Muffins with Olives & Basil" onclick="orderSpecificItem('meals', 13)">
+                    <img src="img/meals/15.jfif" alt="Grilled Chicken Skewers with Rice, Fries & Dips" onclick="orderSpecificItem('meals', 14)">
+                    <img src="img/meals/16.jfif" alt="Sesame Glazed Rack Chops with Greens" onclick="orderSpecificItem('meals', 15)">
+                    <img src="img/meals/17.jfif" alt="Crispy Spring Rolls with Sweet Chili Dip" onclick="orderSpecificItem('meals', 16)">
+                    <img src="img/meals/18.jfif" alt="Crispy Cheese Croquettes with Tomato Sauce" onclick="orderSpecificItem('meals', 17)">
+                </div>
+
+                <div class="best_item">
+                    <img src="img/meals/8.jfif" alt="Grilled Chicken & Creamy Mushroom Fettuccine">
+                    <div class="best_info">
+                        <span class="badge">★ Best Seller</span>
+                        <h3>Grilled Chicken &amp; Creamy Mushroom Fettuccine</h3>
+                        <p>
+                            Our most ordered dish by guests! Tender pan-seared chicken breast slices
+                            served over fettuccine pasta with rich mushroom cream sauce and fresh herbs.
+                        </p>
+                        <button type="button" class="Order" onclick="orderSpecificItem('meals', 7)">Order Now — 185 EGP</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Drinks Section -->
+            <div id="drinks-section" class="category-group" style="display: none;">
+                <div class="container_meals">
+                    <img src="img/Drinks/1.jfif" alt="Blood Orange & Rosemary Cooler" onclick="orderSpecificItem('drinks', 0)">
+                    <img src="img/Drinks/2.jfif" alt="Spiced Cinnamon & Star Anise Warm Cider" onclick="orderSpecificItem('drinks', 1)">
+                    <img src="img/Drinks/3.jfif" alt="Tropical Passion Fruit & Mint Fizz" onclick="orderSpecificItem('drinks', 2)">
+                    <img src="img/Drinks/4.jfif" alt="Blackberry & Wild Berry Smoothie" onclick="orderSpecificItem('drinks', 3)">
+                    <img src="img/Drinks/5.jfif" alt="Blue Citrus & Blueberry Sparkler" onclick="orderSpecificItem('drinks', 4)">
+                    <img src="img/Drinks/6.jfif" alt="Pink Guava, Cream & Chia Parfait Drink" onclick="orderSpecificItem('drinks', 5)">
+                    <img src="img/Drinks/7.jfif" alt="Rosé Citrus & Rosemary Spritz" onclick="orderSpecificItem('drinks', 6)">
+                    <img src="img/Drinks/8.jfif" alt="Classic Espresso Affogato with Vanilla Scoop" onclick="orderSpecificItem('drinks', 7)">
+                    <img src="img/Drinks/9.jfif" alt="Velvet Latte Art Cappuccino" onclick="orderSpecificItem('drinks', 8)">
+                    <img src="img/Drinks/10.jfif" alt="Rich Dark Chocolate Milkshake" onclick="orderSpecificItem('drinks', 9)">
+                    <img src="img/Drinks/11.jfif" alt="Creamy Matcha Green Tea Latte" onclick="orderSpecificItem('drinks', 10)">
+                    <img src="img/Drinks/12.jfif" alt="Lavender Citrus Sparkler" onclick="orderSpecificItem('drinks', 11)">
+                    <img src="img/Drinks/13.jfif" alt="Rich Hot Mocha Espresso" onclick="orderSpecificItem('drinks', 12)">
+                    <img src="img/Drinks/14.jfif" alt="Warm Herbal Mint Tea" onclick="orderSpecificItem('drinks', 13)">
+                    <img src="img/Drinks/15.jfif" alt="Spiced Rose & Pistachio Hot Milk" onclick="orderSpecificItem('drinks', 14)">
+                    <img src="img/Drinks/16.jfif" alt="Chocolate Shavings Hot Cocoa" onclick="orderSpecificItem('drinks', 15)">
+                    <img src="img/Drinks/17.jfif" alt="Mixed Berry & Edible Flower Cooler" onclick="orderSpecificItem('drinks', 16)">
+                    <img src="img/Drinks/18.jfif" alt="Creamy Avocado Smoothie" onclick="orderSpecificItem('drinks', 17)">
+                </div>
+
+                <div class="best_item">
+                    <img src="img/Drinks/3.jfif" alt="Tropical Passion Fruit & Mint Fizz">
+                    <div class="best_info">
+                        <span class="badge">★ Best Seller</span>
+                        <h3>Tropical Passion Fruit &amp; Mint Fizz</h3>
+                        <p>
+                            Our signature refreshment! Chilled passion fruit nectar layered with sparkling
+                            notes and fresh mint leaves — vibrant, tangy, and crowd-loved all day.
+                        </p>
+                        <button type="button" class="Order" onclick="orderSpecificItem('drinks', 2)">Order Now — 80 EGP</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desserts Section -->
+            <div id="desserts-section" class="category-group" style="display: none;">
+                <div class="container_Desserts">
+                    <img src="img/Desserts/1.jfif" alt="Blueberry Cream Swirl Rolls" onclick="orderSpecificItem('desserts', 0)">
+                    <img src="img/Desserts/2.jfif" alt="Glazed Pecan & Cinnamon Loaf Cake" onclick="orderSpecificItem('desserts', 1)">
+                    <img src="img/Desserts/3.jfif" alt="Cranberry, Almond & Honey Sweet Flatbread" onclick="orderSpecificItem('desserts', 2)">
+                    <img src="img/Desserts/4.jfif" alt="Berry Glaze & Vanilla Iced Cinnamon Rolls" onclick="orderSpecificItem('desserts', 3)">
+                    <img src="img/Desserts/5.jfif" alt="Pomegranate Glaze Cheesecake Cups" onclick="orderSpecificItem('desserts', 4)">
+                    <img src="img/Desserts/6.jfif" alt="Fresh Mango Custard Tartlets" onclick="orderSpecificItem('desserts', 5)">
+                    <img src="img/Desserts/7.jfif" alt="White Chocolate & Raspberry Chunk Cookies" onclick="orderSpecificItem('desserts', 6)">
+                    <img src="img/Desserts/8.jfif" alt="Triple Chocolate Fudge Cake with Ice Cream" onclick="orderSpecificItem('desserts', 7)">
+                    <img src="img/Desserts/9.jfif" alt="Salted Caramel & Roasted Hazelnut Mini Cheesecakes" onclick="orderSpecificItem('desserts', 8)">
+                    <img src="img/Desserts/10.jfif" alt="White Chocolate & Berry Truffle Balls" onclick="orderSpecificItem('desserts', 9)">
+                    <img src="img/Desserts/11.jfif" alt="Flaky Cream-Filled Danish Rings" onclick="orderSpecificItem('desserts', 10)">
+                    <img src="img/Desserts/12.jfif" alt="Roasted Sweet Potato Rounds with Cream, Pomegranate & Walnuts" onclick="orderSpecificItem('desserts', 11)">
+                    <img src="img/Desserts/13.jfif" alt="Berry & Whipped Cream Belgian Waffle" onclick="orderSpecificItem('desserts', 12)">
+                    <img src="img/Desserts/14.jfif" alt="Red Berry Glaze & Cream Cinnamon Rolls" onclick="orderSpecificItem('desserts', 13)">
+                    <img src="img/Desserts/15.jfif" alt="Fudgy Chocolate Brownie Bites with Fresh Raspberries" onclick="orderSpecificItem('desserts', 14)">
+                    <img src="img/Desserts/16.jfif" alt="Cookies & Cream Glazed Cinnamon Roll" onclick="orderSpecificItem('desserts', 15)">
+                    <img src="img/Desserts/17.jfif" alt="Honey-Drizzled Walnut & Berry Puff Pastry" onclick="orderSpecificItem('desserts', 16)">
+                    <img src="img/Desserts/18.jfif" alt="Berry Crepes with Dark Chocolate Drizzle & Raspberries" onclick="orderSpecificItem('desserts', 17)">
+                </div>
+
+                <div class="best_item">
+                    <img src="img/Desserts/8.jfif" alt="Triple Chocolate Fudge Cake with Ice Cream">
+                    <div class="best_info">
+                        <span class="badge">★ Best Seller</span>
+                        <h3>Triple Chocolate Fudge Cake with Ice Cream</h3>
+                        <p>
+                            A sweet crowd-favorite layered with rich chocolate sponge, silky ganache,
+                            vanilla ice cream scoops, and roasted pistachio crumble.
+                        </p>
+                        <button type="button" class="Order" onclick="orderSpecificItem('desserts', 7)">Order Now — 120 EGP</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DAILY MENU TABLE VIEW -->
+        <section id="menu-view" class="view-section" style="display: none;">
+            <div class="card">
+                <div class="menu-header-row">
+                    <h2 id="menu-table-title">Meals Menu &amp; Prices</h2>
+                    <select id="menu-category-select" onchange="syncMenuFromTableSelect()">
+                        <option value="meals">Meals</option>
+                        <option value="drinks">Drinks</option>
+                        <option value="desserts">Desserts</option>
+                    </select>
+                </div>
+
+                <div class="table-wrap">
+                    <table class="menu-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Order</th>
+                            </tr>
+                        </thead>
+                        <tbody id="menu-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ORDER & BOOKING FORM VIEW -->
+        <section id="booking-view" class="view-section" style="display: none;">
+            <!-- Selected Product Card Above Form (Best-Seller-Like Image + Info Side by Side) -->
+            <div id="selected-product-card" class="selected-product-card">
+                <img id="preview-img" src="img/meals/8.jfif" alt="Selected Item">
+                <div class="selected-product-details">
+                    <div class="selected-product-top">
+                        <span id="preview-category" class="badge">Meals</span>
+                        <span id="preview-price" class="price-tag">185 EGP</span>
+                    </div>
+                    <h3 id="preview-name">Grilled Chicken &amp; Creamy Mushroom Fettuccine</h3>
+                    <p id="preview-desc">
+                        Tender pan-seared chicken breast slices served over fettuccine pasta with rich mushroom cream sauce and fresh herbs.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Order Form Below Product Card -->
+            <div class="card">
+                <h2>Complete Your Order / Booking</h2>
+                <p class="form-note">Fill in your details below to place your order or reserve a table.</p>
+
+                <form id="booking-form" onsubmit="handleLocalSubmit(event)">
+                    <label for="selected-item-input">Selected Item:</label>
+                    <input type="text" id="selected-item-input" name="item" value="Grilled Chicken & Creamy Mushroom Fettuccine — 185 EGP" readonly>
+
+                    <label for="item-qty">Quantity:</label>
+                    <input type="number" id="item-qty" name="quantity" value="1" min="1" max="20" oninput="updateTotalPrice()" onchange="updateTotalPrice()" required>
+
+                    <div class="total-price-box">
+                        <span>Total Price:</span>
+                        <strong id="total-price-display">185 EGP</strong>
+                    </div>
+
+                    <label for="payment-method">Payment Method:</label>
+                    <select id="payment-method" name="payment" onchange="toggleVisaFields()">
+                        <option value="Cash on Delivery">Cash on Delivery (عند الاستلام)</option>
+                        <option value="Visa / Credit Card">Visa / Credit Card (فيزا)</option>
+                    </select>
+
+                    <!-- Optional Demo Visa Fields -->
+                    <div id="visa-fields" class="visa-fields" style="display: none;">
+                        <label for="visa-number">Card Number (Demo):</label>
+                        <input type="text" id="visa-number" placeholder="4532 •••• •••• 8910" maxlength="19">
+
+                        <div class="visa-row">
+                            <div>
+                                <label for="visa-expiry">Expiry:</label>
+                                <input type="text" id="visa-expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div>
+                                <label for="visa-cvv">CVV:</label>
+                                <input type="password" id="visa-cvv" placeholder="•••" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <label for="customer-name">Your Name:</label>
+                    <input type="text" id="customer-name" name="name" placeholder="Enter your full name" required>
+
+                    <label for="customer-phone">Phone Number:</label>
+                    <input type="tel" id="customer-phone" name="phone" placeholder="01X XXXX XXXX" required>
+
+                    <label for="customer-email">Email:</label>
+                    <input type="email" id="customer-email" name="email" placeholder="your@email.com" required>
+
+                    <label for="customer-message">Notes / Delivery or Table Details:</label>
+                    <textarea id="customer-message" name="message" rows="3" placeholder="Any extra notes, table time, or delivery address..."></textarea>
+
+                    <button type="submit" class="submit-btn">Confirm Order</button>
+                    <p id="demo-feedback" class="demo-feedback" aria-live="polite"></p>
+                </form>
+
+                <!-- Creative Delivery Scooter Animation Shown After Submit -->
+                <div id="delivery-tracker" class="delivery-tracker" style="display: none;">
+                    <div class="delivery-header">
+                        <span class="delivery-badge">Order Dispatched</span>
+                        <p id="delivery-summary-text"></p>
+                    </div>
+                    <div class="delivery-road">
+                        <div class="scooter-runner" aria-hidden="true">🛵💨</div>
+                        <div class="road-line"></div>
+                    </div>
+                    <div class="delivery-stops">
+                        <span>Kitchen Prep</span>
+                        <span>On The Way</span>
+                        <span>Arriving Soon</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
