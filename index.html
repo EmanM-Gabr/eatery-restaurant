@@ -15,7 +15,7 @@
                 <a href="#home" class="nav-link active" data-view="home" onclick="showPage('home')">Home</a>
                 <a href="#categories-view" class="nav-link" data-view="categories" onclick="showPage('categories')">Categories</a>
                 <a href="#menu-view" class="nav-link" data-view="menu" onclick="showPage('menu')">Daily Menu</a>
-                <a href="#booking-view" class="nav-link" data-view="booking" onclick="showPage('booking')">Order &amp; Booking</a>
+                <a href="#booking-view" class="nav-link" data-view="booking" onclick="showPage('booking')">Order &amp; Invoices</a>
             </nav>
         </div>
     </header>
@@ -46,8 +46,8 @@
                     <p>From vibrant citrus coolers and specialty coffee to warm chocolate finishes.</p>
                 </article>
                 <article class="highlight-card">
-                    <h3>Instant Item Ordering</h3>
-                    <p>Pick any dish, drink, or dessert from our menu to view its details and place your order.</p>
+                    <h3>Manage &amp; Edit Invoices</h3>
+                    <p>Track every order invoice, adjust quantities, swap items, or cancel anytime.</p>
                 </article>
             </div>
 
@@ -57,12 +57,12 @@
                     <span>Curated Menu Items</span>
                 </div>
                 <div class="stat-box">
-                    <strong>3</strong>
-                    <span>Signature Categories</span>
+                    <strong id="home-orders-count">0</strong>
+                    <span>Orders Placed</span>
                 </div>
                 <div class="stat-box">
-                    <strong>Daily</strong>
-                    <span>Fresh Prep &amp; Service</span>
+                    <strong id="home-visits-count">1</strong>
+                    <span>Page Visits</span>
                 </div>
             </div>
         </section>
@@ -217,9 +217,15 @@
             </div>
         </section>
 
-        <!-- ORDER & BOOKING FORM VIEW -->
+        <!-- ORDER, INVOICES & BOOKING FORM VIEW -->
         <section id="booking-view" class="view-section" style="display: none;">
-            <!-- Selected Product Card Above Form (Best-Seller-Like Image + Info Side by Side) -->
+            <!-- Activity Bar (Visits & Invoices Count) -->
+            <div class="activity-bar">
+                <span>Visits: <strong id="activity-visits">1</strong></span>
+                <span>Total Invoices: <strong id="activity-invoices">0</strong></span>
+            </div>
+
+            <!-- Selected Product Card Above Form -->
             <div id="selected-product-card" class="selected-product-card">
                 <img id="preview-img" src="img/meals/8.jfif" alt="Selected Item">
                 <div class="selected-product-details">
@@ -237,9 +243,9 @@
             <!-- Order Form Below Product Card -->
             <div class="card">
                 <h2>Complete Your Order / Booking</h2>
-                <p class="form-note">Fill in your details below to place your order or reserve a table.</p>
+                <p class="form-note">Fill in your details below to create a numbered invoice and send to Email.</p>
 
-                <form id="booking-form" onsubmit="handleLocalSubmit(event)">
+                <form id="booking-form" onsubmit="handleOrderSubmit(event)">
                     <label for="selected-item-input">Selected Item:</label>
                     <input type="text" id="selected-item-input" name="item" value="Grilled Chicken & Creamy Mushroom Fettuccine — 185 EGP" readonly>
 
@@ -286,7 +292,7 @@
                     <label for="customer-message">Notes / Delivery or Table Details:</label>
                     <textarea id="customer-message" name="message" rows="3" placeholder="Any extra notes, table time, or delivery address..."></textarea>
 
-                    <button type="submit" class="submit-btn">Confirm Order</button>
+                    <button type="submit" id="submit-order-btn" class="submit-btn">Confirm Order</button>
                     <p id="demo-feedback" class="demo-feedback" aria-live="polite"></p>
                 </form>
 
@@ -306,6 +312,16 @@
                         <span>Arriving Soon</span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Invoices List (All Orders Made + Edit / Change Item / Quantity / Cancel / Send Email) -->
+            <div id="invoices-section" class="card">
+                <div class="invoices-header">
+                    <h2>Order Invoices</h2>
+                    <span id="invoices-count-badge" class="badge">0 Invoices</span>
+                </div>
+                <p class="form-note">You can increase/decrease quantity, change the item, cancel an invoice, or resend it to Email.</p>
+                <div id="invoices-container" class="invoices-list"></div>
             </div>
         </section>
     </main>
