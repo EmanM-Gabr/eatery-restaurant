@@ -226,6 +226,21 @@ select {
     outline: none;
 }
 
+/* Activity Bar */
+.activity-bar {
+    background-color: #fffbeb;
+    border: 1px solid #f59e0b;
+    border-radius: 12px;
+    padding: 10px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.92rem;
+    color: #7c2d12;
+}
+
 /* Image Strip & Best Seller */
 .category-group {
     margin-top: 16px;
@@ -396,7 +411,6 @@ select {
     color: #fffbeb;
     font-size: 0.85rem;
     font-weight: 700;
-    letter-spacing: 0.2px;
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(124, 45, 18, 0.18);
     transition: transform 0.18s ease, box-shadow 0.2s ease, filter 0.2s ease;
@@ -418,7 +432,7 @@ select {
     transform: translateX(3px);
 }
 
-/* Selected Product Card Above Form (Best-Seller-Sized Image + Side Info) */
+/* Selected Product Card Above Form */
 .selected-product-card {
     background-color: #ffffff;
     border: 1.5px solid #d97706;
@@ -565,9 +579,14 @@ select {
     transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
     background-color: #d97706;
     transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
 .demo-feedback {
@@ -661,10 +680,157 @@ select {
     }
 }
 
+/* Invoices Section */
+.invoices-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.invoices-header h2 {
+    margin-bottom: 0;
+}
+
+.invoices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.empty-invoices {
+    text-align: center;
+    color: #6b5b53;
+    background-color: #fdf8f3;
+    border: 1px dashed #e2cfc0;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.invoice-card {
+    background-color: #fffdfb;
+    border: 1.5px solid #edd9c4;
+    border-left: 5px solid #7c2d12;
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.invoice-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.invoice-id {
+    font-weight: 800;
+    color: #7c2d12;
+    font-size: 1rem;
+}
+
+.invoice-meta {
+    font-size: 0.85rem;
+    color: #6b5b53;
+}
+
+.invoice-body-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr auto;
+    gap: 12px;
+    align-items: center;
+}
+
+.invoice-item-select {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 10px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.qty-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid #d97706;
+    background-color: #fffbeb;
+    color: #7c2d12;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.qty-btn:hover {
+    background-color: #fbbf24;
+}
+
+.qty-val {
+    min-width: 24px;
+    text-align: center;
+    font-weight: 700;
+}
+
+.invoice-total {
+    font-weight: 800;
+    color: #92400e;
+    font-size: 1.05rem;
+    text-align: right;
+}
+
+.invoice-customer {
+    font-size: 0.88rem;
+    color: #4a3f3a;
+}
+
+.invoice-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.inv-btn {
+    padding: 6px 13px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.inv-btn:hover {
+    transform: translateY(-1px);
+}
+
+.inv-send-btn {
+    background-color: #7c2d12;
+    color: #fffbeb;
+}
+
+.inv-cancel-btn {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .highlights-grid,
-    .stats-strip {
+    .stats-strip,
+    .invoice-body-grid {
         grid-template-columns: 1fr;
     }
 
@@ -691,5 +857,9 @@ select {
 
     .visa-row {
         grid-template-columns: 1fr;
+    }
+
+    .invoice-total {
+        text-align: left;
     }
 }
